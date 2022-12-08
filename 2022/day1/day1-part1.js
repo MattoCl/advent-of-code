@@ -1,19 +1,18 @@
 const { readFileSync } = require("fs");
 
-const elfCalories = readFileSync("./input.txt", "utf-8");
+const elfCalories = readFileSync("./input.txt", "utf-8").split("\n");
 
 function getLargestSum(elfCalories) {
   let largestSum = 0;
   let currentSum = 0;
-  elfCalories = elfCalories.split("\n");
-  for (let i = 0; i < elfCalories.length; i++) {
-    if (elfCalories[i] === "") {
+  for (food of elfCalories) {
+    if (isNaN(parseInt(food))) {
       if (currentSum > largestSum) {
         largestSum = currentSum;
       }
       currentSum = 0;
     } else {
-      currentSum += parseInt(elfCalories[i]);
+      currentSum += parseInt(food);
     }
   }
   return largestSum;

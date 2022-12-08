@@ -5,12 +5,12 @@ const elfCalories = readFileSync("./input.txt", "utf-8").split("\n");
 function getLargestSum(elfCalories) {
   let largestSum = [];
   let currentSum = 0;
-  for (let i = 0; i < elfCalories.length; i++) {
-    if (elfCalories[i] === "") {
+  for (food of elfCalories) {
+    if (isNaN(parseInt(food))) {
       largestSum.push(currentSum);
       currentSum = 0;
     } else {
-      currentSum += parseInt(elfCalories[i]);
+      currentSum += parseInt(food);
     }
   }
 
