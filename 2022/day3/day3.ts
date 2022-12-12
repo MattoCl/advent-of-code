@@ -1,49 +1,47 @@
+import { common } from "@mui/material/colors";
+import { letterSpacing } from "@mui/system";
 import { readFileSync } from "fs";
+import { convertCharToNumber } from "../day3/utils";
 
 const input: string[] = readFileSync("./input.txt", "utf-8").split("\n");
 
-const findCommonLetters = (str1: string, str2: string): string => {
-  //return letters that appear in both strings
-  const letters1: string[] = str1.split("");
-  const letters2: string[] = str2.split("");
-  const commonLetters: string[] = [];
-  for (let i = 0; i < letters1.length; i++) {
-    if (letters2.indexOf(letters1[i]) !== -1) {
-      commonLetters.push(letters1[i]);
+const part1 = (input: string[]): void => {
+  let totalScore: number[] = [];
+  input.map((line) => {
+    const firstHalf: string[] = [...line.slice(0, line.length / 2)];
+    const secondHalf: string[] = [...line.slice(line.length / 2)];
+    const intersection = firstHalf.filter((value) =>
+      secondHalf.includes(value)
+    );
+    const intersectionWithoutDuplicates = [...new Set(intersection)];
+    totalScore.push(convertCharToNumber(intersectionWithoutDuplicates[0]));
+  });
+  console.log(totalScore.reduce((a, b) => a + b, 0));
+};
+
+const NUMBER_OF_BACKPACKS: number = 3;
+
+const part2 = (input: string[]): void => {
+  let totalScore: number[] = [];
+  //This works for x amount of backpacks, just increase constant
+  for (let i = 0; i < input.length; i += NUMBER_OF_BACKPACKS) {
+    const backpack = [[...input[i]], [...input[i + 1]], [...input[i + 2]]];
+
+    let intersection = backpack[0].filter((value) =>
+      backpack[1].includes(value)
+    );
+
+    for (let i = 0; i < backpack.length; i++) {
+      intersection = intersection.filter((value) =>
+        backpack[i].includes(value)
+      );
     }
+
+    const intersectionWithoutDuplicates = [...new Set(intersection)];
+    totalScore.push(convertCharToNumber(intersectionWithoutDuplicates[0]));
   }
-  return [...new Set(commonLetters.join(""))].toString();
+  console.log(totalScore.reduce((a, b) => a + b, 0));
 };
 
-const splitStringInHalf = (str: string): string => {
-  const firstHalf: string = str.slice(0, str.length / 2);
-  const secondHalf: string = str.slice(str.length / 2, str.length);
-  return findCommonLetters(firstHalf, secondHalf);
-};
-
-const sumCommonLetterValues = (input: string[]): number => {
-  let arrayOfCommonLetters: string[] = [];
-  for (const rucksack of input) {
-    arrayOfCommonLetters.push(splitStringInHalf(rucksack));
-  }
-  let totalCharacterValues: number = arrayOfCommonLetters
-    .map((str) => {
-      if (str === str.toLowerCase()) return str.charCodeAt(0) - 96;
-      else return str.toLowerCase().charCodeAt(0) - 96 + 26;
-    })
-    .reduce((a, b) => a + b);
-  return totalCharacterValues;
-};
-
-const findElfGroup = (input: string[]): number => {
-  let arrayOfCommonLetters: string[] = [];
-  for (let i = 0; i < input.length; i += 3) {
-    let rucksack: string = input[i] + input[i + 1] + input[i + 2];
-    arrayOfCommonLetters.push(splitStringInHalf(rucksack));
-  }
-  console.log(arrayOfCommonLetters);
-  return 0;
-};
-
-console.log(sumCommonLetterValues(input));
-console.log(findElfGroup(input));
+part1(input);
+part2(input);
